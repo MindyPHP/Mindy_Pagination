@@ -2,6 +2,7 @@
 
 namespace Mindy\Pagination;
 
+use Mindy\Exception\Exception;
 use Mindy\Helper\Traits\Accessors;
 use Mindy\Helper\Traits\Configurator;
 
@@ -17,7 +18,7 @@ use Mindy\Helper\Traits\Configurator;
  * @site http://studio107.ru
  * @date 09/05/14.05.2014 14:56
  */
-class BasePagination
+abstract class BasePagination
 {
     use Accessors, Configurator;
 
@@ -65,10 +66,13 @@ class BasePagination
      * @var bool is QuerySet?
      */
     private $isQs = false;
-    /**
-     * @var integer maximum number of page buttons that can be displayed. Defaults to 10.
-     */
-    public $maxButtonCount = 10;
+
+    public function __construct($source, array $config = [])
+    {
+        $this->source = $source;
+        $this->configure($config);
+        $this->init();
+    }
 
     public function init()
     {
@@ -192,9 +196,28 @@ class BasePagination
      */
     public function paginate()
     {
-        return $this->isQs ? $this->applyLimitQuerySet() : $this->applyLimitArray();
+        return $this->applyLimit();
     }
 
+    /**
+     * @return array
+     */
+    protected function applyLimit()
+    {
+        if(is_array($this->source)) {
+            return $this->applyLimitArray();
+        } else if($this->source instanceof \Mindy\Query\Query) {
+            return $this->applyLimitQuery();
+        } else if($this->source instanceof \Mindy\Orm\QuerySet) {
+            return $this->applyLimitQuerySet();
+        } else {
+            throw new Exception("Unknown source");
+        }
+    }
+
+    /**
+     * @return array
+     */
     protected function applyLimitArray()
     {
         $this->total = count($this->source);
@@ -204,6 +227,20 @@ class BasePagination
         return $this->data;
     }
 
+    /**
+     * @return array
+     */
+    protected function applyLimitQuery()
+    {
+        $this->total = $this->source->count();
+        $offset = $this->page > 1 ? $this->pageSize * ($this->page - 1) : 0;
+        $this->data = $this->source->limit($this->pageSize)->offset($offset)->all();
+        return $this->data;
+    }
+
+    /**
+     * @return array
+     */
     protected function applyLimitQuerySet()
     {
         $this->total = $this->source->count();

@@ -5,8 +5,6 @@ namespace Mindy\Pagination;
 use Mindy\Utils\RenderTrait;
 
 /**
- *
- *
  * All rights reserved.
  *
  * @author Falaleev Maxim
@@ -19,6 +17,18 @@ use Mindy\Utils\RenderTrait;
 class Pagination extends BasePagination
 {
     use RenderTrait;
+
+    public function toJson()
+    {
+        return [
+            'objects' => $this->data,
+            'meta' => [
+                'total' => $this->total,
+                'page' => $this->page,
+                'pageSize' => $this->pageSize,
+            ]
+        ];
+    }
 
     public function render($view = "core/pager/pager.twig")
     {

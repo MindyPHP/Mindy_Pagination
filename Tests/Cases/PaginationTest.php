@@ -35,7 +35,7 @@ class PaginationTest extends TestCase
             'pageSize' => $pageSize
         ]);
         $pager->setPage($page);
-        $this->assertEquals($result, $pager->paginate()->data);
+        $this->assertEquals($result, $pager->paginate());
     }
 
     public function testPagerInit()
@@ -48,9 +48,24 @@ class PaginationTest extends TestCase
         $this->assertEquals(5, $pager->getPagesCount());
         $this->assertEquals(10, $pager->getTotal());
         $this->assertTrue($pager->hasNextPage());
-        $this->assertTrue($pager->hasPrevPage());
+        $this->assertFalse($pager->hasPrevPage());
         $this->assertEquals(1, $pager->getCurrentPage());
+    }
 
-        $this->assertEquals("1 1 10 1\n", $pager->render());
+    public function testPaginateJson()
+    {
+        $pager = new Pagination([
+            'source' => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+            'pageSize' => 2
+        ]);
+        $this->assertEquals([1, 2], $pager->paginate());
+        $this->assertEquals([
+            'objects' => [1, 2],
+            'meta' => [
+                'page' => 1,
+                'pageSize' => 2,
+                'total' => 10
+            ]
+        ], $pager->toJson());
     }
 }
