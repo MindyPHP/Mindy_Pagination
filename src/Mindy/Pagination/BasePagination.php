@@ -7,8 +7,6 @@ use Mindy\Helper\Traits\Accessors;
 use Mindy\Helper\Traits\Configurator;
 
 /**
- *
- *
  * All rights reserved.
  *
  * @author Falaleev Maxim
@@ -195,14 +193,6 @@ abstract class BasePagination
      * @return $this
      */
     public function paginate()
-    {
-        return $this->applyLimit();
-    }
-
-    /**
-     * @return array
-     */
-    protected function applyLimit()
     {
         if(is_array($this->source)) {
             return $this->applyLimitArray();

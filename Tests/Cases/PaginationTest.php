@@ -1,6 +1,7 @@
 <?php
 
 use Mindy\Pagination\Pagination;
+use Mindy\Query\Query;
 
 /**
  * All rights reserved.
@@ -30,8 +31,7 @@ class PaginationTest extends TestCase
      */
     public function testPager($data, $page, $pageSize, $result)
     {
-        $pager = new Pagination([
-            'source' => $data,
+        $pager = new Pagination($data, [
             'pageSize' => $pageSize
         ]);
         $pager->setPage($page);
@@ -40,8 +40,7 @@ class PaginationTest extends TestCase
 
     public function testPagerInit()
     {
-        $pager = new Pagination([
-            'source' => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        $pager = new Pagination([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], [
             'pageSize' => 2
         ]);
         $pager->paginate();
@@ -54,8 +53,7 @@ class PaginationTest extends TestCase
 
     public function testPaginateJson()
     {
-        $pager = new Pagination([
-            'source' => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        $pager = new Pagination([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], [
             'pageSize' => 2
         ]);
         $this->assertEquals([1, 2], $pager->paginate());
@@ -67,5 +65,27 @@ class PaginationTest extends TestCase
                 'total' => 10
             ]
         ], $pager->toJson());
+    }
+
+    public function testPaginateQuery()
+    {
+        $connection = new \Mindy\Query\Connection([
+            'dsn' => 'sqlite::memory:'
+        ]);
+        $cmd = $connection->createCommand();
+        $cmd->createTable('test', ['id' => 'auto'])->execute();
+        $cmd->insert('test', ['id' => 1])->execute();
+        $cmd->insert('test', ['id' => 2])->execute();
+        $cmd->insert('test', ['id' => 3])->execute();
+        $cmd->insert('test', ['id' => 4])->execute();
+
+        $query = new Query();
+        $query->db = $connection;
+
+        $query->select(['id'])->from('test');
+        $pager = new Pagination($query, [
+            'pageSize' => 1
+        ]);
+        $this->assertEquals([['id' => 1]], $pager->paginate());
     }
 }
