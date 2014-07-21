@@ -190,16 +190,17 @@ abstract class BasePagination
 
     /**
      * Apply limits to source
+     * @throws \Mindy\Exception\Exception
      * @return $this
      */
     public function paginate()
     {
         if(is_array($this->source)) {
             return $this->applyLimitArray();
-        } else if($this->source instanceof \Mindy\Query\Query) {
-            return $this->applyLimitQuery();
         } else if($this->source instanceof \Mindy\Orm\QuerySet) {
             return $this->applyLimitQuerySet();
+        } else if($this->source instanceof \Mindy\Query\Query) {
+            return $this->applyLimitQuery();
         } else {
             throw new Exception("Unknown source");
         }
@@ -241,7 +242,7 @@ abstract class BasePagination
     public function getName()
     {
         if ($this->isQs) {
-            $base = $this->source->model->shortClassName();
+            $base = $this->source->model->classNameShort();
         } else {
             $base = 'Pager';
         }
