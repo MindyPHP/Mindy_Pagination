@@ -30,7 +30,7 @@ class Pagination extends BasePagination
         ];
     }
 
-    public function render($view = "core/pager/pager.twig")
+    public function render($view = "core/pager/pager.html")
     {
         return $this->renderTemplate($view, ['this' => $this]);
     }
