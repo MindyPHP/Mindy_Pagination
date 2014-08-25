@@ -253,7 +253,7 @@ abstract class BasePagination
         return $base . '_' . $this->_id;
     }
 
-    public function iterPrevPage($count = 5)
+    public function iterPrevPage($count = 3)
     {
         $pages = [];
         foreach(array_reverse(range(1, $count)) as $i) {
@@ -265,7 +265,7 @@ abstract class BasePagination
         return $pages;
     }
 
-    public function iterNextPage($count = 5)
+    public function iterNextPage($count = 3)
     {
         $pages = [];
         foreach(range(1, $count) as $i) {
