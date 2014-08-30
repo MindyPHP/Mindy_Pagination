@@ -255,6 +255,9 @@ abstract class BasePagination
 
     public function iterPrevPage($count = 3)
     {
+        if($this->getCurrentPage() == $this->getPagesCount() && $this->getPagesCount() - $count * 2 > 0) {
+            $count *= 2;
+        }
         $pages = [];
         foreach(array_reverse(range(1, $count)) as $i) {
             $page = $this->getCurrentPage() - $i;
@@ -267,6 +270,9 @@ abstract class BasePagination
 
     public function iterNextPage($count = 3)
     {
+        if($this->getCurrentPage() == 1 && $this->getPagesCount() >= $count * 2) {
+            $count *= 2;
+        }
         $pages = [];
         foreach(range(1, $count) as $i) {
             $page = $this->getCurrentPage() + $i;
