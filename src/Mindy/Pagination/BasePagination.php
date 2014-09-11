@@ -197,7 +197,7 @@ abstract class BasePagination
     {
         if(is_array($this->source)) {
             return $this->applyLimitArray();
-        } else if($this->source instanceof \Mindy\Orm\HasManyManager || $this->source instanceof \Mindy\Orm\ManyToManyManager) {
+        } else if($this->source instanceof \Mindy\Orm\Manager) {
             $this->source = $this->source->getQuerySet();
             return $this->applyLimitQuerySet();
         } else if($this->source instanceof \Mindy\Orm\QuerySet) {
