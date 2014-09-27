@@ -77,26 +77,29 @@ abstract class BasePagination
         self::$id++;
 
         $this->_id = self::$id;
-        if(class_exists('\Mindy\Orm\QuerySet')) {
+        if (class_exists('\Mindy\Orm\QuerySet')) {
             $this->isQs = $this->source instanceof \Mindy\Orm\QuerySet;
         }
     }
 
-    public function getUrl($page)
+    public function getUrl($page, $endless = false)
     {
         $uri = parse_url($_SERVER['REQUEST_URI']);
-        if(!isset($uri['query'])) {
+        if (!isset($uri['query'])) {
             $uri['query'] = '';
         }
         parse_str($uri['query'], $params);
         $params[$this->getName()] = $page;
+        if($endless) {
+            $params['endless'] = $endless;
+        }
         return "?" . http_build_query($params);
     }
 
     public function urlPageSize($pageSize)
     {
         $uri = parse_url($_SERVER['REQUEST_URI']);
-        if(!isset($uri['query'])) {
+        if (!isset($uri['query'])) {
             $uri['query'] = '';
         }
         parse_str($uri['query'], $params);
@@ -195,14 +198,14 @@ abstract class BasePagination
      */
     public function paginate()
     {
-        if(is_array($this->source)) {
+        if (is_array($this->source)) {
             return $this->applyLimitArray();
-        } else if($this->source instanceof \Mindy\Orm\Manager) {
+        } else if ($this->source instanceof \Mindy\Orm\Manager) {
             $this->source = $this->source->getQuerySet();
             return $this->applyLimitQuerySet();
-        } else if($this->source instanceof \Mindy\Orm\QuerySet) {
+        } else if ($this->source instanceof \Mindy\Orm\QuerySet) {
             return $this->applyLimitQuerySet();
-        } else if($this->source instanceof \Mindy\Query\Query) {
+        } else if ($this->source instanceof \Mindy\Query\Query) {
             return $this->applyLimitQuery();
         } else {
             throw new Exception("Unknown source");
@@ -255,13 +258,13 @@ abstract class BasePagination
 
     public function iterPrevPage($count = 3)
     {
-        if($this->getCurrentPage() == $this->getPagesCount() && $this->getPagesCount() - $count * 2 > 0) {
+        if ($this->getCurrentPage() == $this->getPagesCount() && $this->getPagesCount() - $count * 2 > 0) {
             $count *= 2;
         }
         $pages = [];
-        foreach(array_reverse(range(1, $count)) as $i) {
+        foreach (array_reverse(range(1, $count)) as $i) {
             $page = $this->getCurrentPage() - $i;
-            if($page > 0) {
+            if ($page > 0) {
                 $pages[] = $page;
             }
         }
@@ -270,13 +273,13 @@ abstract class BasePagination
 
     public function iterNextPage($count = 3)
     {
-        if($this->getCurrentPage() == 1 && $this->getPagesCount() >= $count * 2) {
+        if ($this->getCurrentPage() == 1 && $this->getPagesCount() >= $count * 2) {
             $count *= 2;
         }
         $pages = [];
-        foreach(range(1, $count) as $i) {
+        foreach (range(1, $count) as $i) {
             $page = $this->getCurrentPage() + $i;
-            if($page <= $this->getPagesCount()) {
+            if ($page <= $this->getPagesCount()) {
                 $pages[] = $page;
             }
         }
