@@ -13,7 +13,6 @@
         "php": ">=5.4",
         "mindy/helper": "dev-master",
         "mindy/exception": "dev-master",
-        "mindy/renderer": "dev-master",
         "mindy/template": "dev-master"
     },
     "require-dev": {

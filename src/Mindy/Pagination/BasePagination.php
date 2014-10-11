@@ -61,6 +61,10 @@ abstract class BasePagination
      */
     private $_id;
     /**
+     * @var string Pager name
+     */
+    private $_name;
+    /**
      * @var bool is QuerySet?
      */
     private $isQs = false;
@@ -240,20 +244,30 @@ abstract class BasePagination
      */
     protected function applyLimitQuerySet()
     {
-        $this->total = $this->source->count();
+        $source = clone $this->source;
+        $this->total = $source->count();
         $this->data = $this->source->paginate($this->getPage(), $this->getPageSize())->all();
         return $this->data;
     }
 
+    public function setName($name)
+    {
+        $this->_name = $name;
+    }
+
     public function getName()
     {
-        if ($this->isQs) {
-            $base = $this->source->model->classNameShort();
-        } else {
-            $base = 'Pager';
-        }
+        if($this->_name === null) {
+            if ($this->isQs) {
+                $base = $this->source->model->classNameShort();
+            } else {
+                $base = 'Pager';
+            }
 
-        return $base . '_' . $this->_id;
+            return $base . '_' . $this->_id;
+        } else {
+            return $this->_name;
+        }
     }
 
     public function iterPrevPage($count = 3)
