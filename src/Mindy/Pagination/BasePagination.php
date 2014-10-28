@@ -97,7 +97,7 @@ abstract class BasePagination
         if($endless) {
             $params['endless'] = $endless;
         }
-        return "?" . http_build_query($params);
+        return $uri['path'] . "?" . http_build_query($params);
     }
 
     public function urlPageSize($pageSize)
