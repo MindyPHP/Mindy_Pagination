@@ -94,7 +94,7 @@ abstract class BasePagination
         }
         parse_str($uri['query'], $params);
         $params[$this->getName()] = $page;
-        if($endless) {
+        if ($endless) {
             $params['endless'] = $endless;
         }
         return $uri['path'] . "?" . http_build_query($params);
@@ -124,7 +124,7 @@ abstract class BasePagination
             } else {
                 $this->pageSize = self::$defaultPageSize;
             }
-        } else {
+        } else if ($this->pageSize === null) {
             $this->pageSize = self::$defaultPageSize;
         }
 
@@ -255,7 +255,7 @@ abstract class BasePagination
 
     public function getName()
     {
-        if($this->_name === null) {
+        if ($this->_name === null) {
             if ($this->isQs) {
                 $base = $this->source->model->classNameShort();
             } else {
