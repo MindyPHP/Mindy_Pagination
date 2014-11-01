@@ -108,7 +108,7 @@ abstract class BasePagination
         }
         parse_str($uri['query'], $params);
         $params[$this->getPageSizeKey()] = $pageSize;
-        return "?" . http_build_query($params);
+        return $uri['path'] . "?" . http_build_query($params);
     }
 
     /**
@@ -117,17 +117,15 @@ abstract class BasePagination
      */
     public function getPageSize()
     {
-        if ($this->pageSize === null) {
-            if (isset($_GET[$this->getPageSizeKey()])) {
-                $pageSize = (int)$_GET[$this->getPageSizeKey()];
-                if ($pageSize) {
-                    $this->pageSize = $pageSize;
-                } else {
-                    $this->pageSize = self::$defaultPageSize;
-                }
+        if (isset($_GET[$this->getPageSizeKey()])) {
+            $pageSize = (int)$_GET[$this->getPageSizeKey()];
+            if ($pageSize) {
+                $this->pageSize = $pageSize;
             } else {
                 $this->pageSize = self::$defaultPageSize;
             }
+        } else {
+            $this->pageSize = self::$defaultPageSize;
         }
 
         return $this->pageSize;
