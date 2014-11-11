@@ -5,6 +5,7 @@ namespace Mindy\Pagination;
 use Mindy\Exception\Exception;
 use Mindy\Helper\Traits\Accessors;
 use Mindy\Helper\Traits\Configurator;
+use Mindy\Pagination\Interfaces\IPagination;
 
 /**
  * All rights reserved.
@@ -37,7 +38,7 @@ abstract class BasePagination
      */
     public $pageSizes = [10, 20, 50, 100];
     /**
-     * @var array|\Mindy\Orm\QuerySet
+     * @var array|IPagination|\Mindy\Orm\QuerySet|\Mindy\Orm\Manager|\Mindy\Query\Query
      */
     public $source = [];
     /**
@@ -209,6 +210,8 @@ abstract class BasePagination
             return $this->applyLimitQuerySet();
         } else if ($this->source instanceof \Mindy\Query\Query) {
             return $this->applyLimitQuery();
+        } else if ($this->source instanceof IPagination) {
+            return $this->applyLimitByInterface();
         } else {
             throw new Exception("Unknown source");
         }
@@ -245,6 +248,19 @@ abstract class BasePagination
         $source = clone $this->source;
         $this->total = $source->count();
         $this->data = $this->source->paginate($this->getPage(), $this->getPageSize())->all();
+        return $this->data;
+    }
+
+    /**
+     * @return array
+     */
+    protected function applyLimitByInterface()
+    {
+        $offset = $this->page > 1 ? $this->pageSize * ($this->page - 1) : 0;
+        $this->source->setLimit($this->pageSize);
+        $this->source->setOffset($offset);
+        $this->data = $this->source->all();
+        $this->total = $this->source->getTotal();
         return $this->data;
     }
 
