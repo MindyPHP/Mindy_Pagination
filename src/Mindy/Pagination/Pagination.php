@@ -18,6 +18,11 @@ class Pagination extends BasePagination
 {
     use RenderTrait;
 
+    public function __toString()
+    {
+        return (string)$this->render();
+    }
+
     public function toJson()
     {
         return [
