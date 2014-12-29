@@ -128,6 +128,8 @@ abstract class BasePagination
         } else if ($this->pageSize === null) {
             $this->pageSize = self::$defaultPageSize;
         }
+        
+        $this->setPage(1);
 
         return $this->pageSize;
     }
