@@ -128,8 +128,10 @@ abstract class BasePagination
         } else if ($this->pageSize === null) {
             $this->pageSize = self::$defaultPageSize;
         }
-        
-        $this->setPage(1);
+
+        if (ceil($this->getTotal() / $this->pageSize) < $this->getPage()) {
+            header("Location: " . $this->getUrl(1));
+        }
 
         return $this->pageSize;
     }
@@ -152,8 +154,7 @@ abstract class BasePagination
      */
     public function getPagesCount()
     {
-        $pageSize = $this->getPageSize();
-        return (int)(($this->getTotal() + $pageSize - 1) / $pageSize);
+        return ceil($this->getTotal() / $this->getPageSize());
     }
 
     public function hasNextPage()
@@ -237,8 +238,10 @@ abstract class BasePagination
     protected function applyLimitQuery()
     {
         $this->total = $this->source->count();
-        $offset = $this->page > 1 ? $this->pageSize * ($this->page - 1) : 0;
-        $this->data = $this->source->limit($this->pageSize)->offset($offset)->all();
+        $page = $this->getPage();
+        $pageSize = $this->getPageSize();
+        $offset = $page > 1 ? $pageSize * ($page - 1) : 0;
+        $this->data = $this->source->limit($pageSize)->offset($offset)->all();
         return $this->data;
     }
 
@@ -258,11 +261,13 @@ abstract class BasePagination
      */
     protected function applyLimitByInterface()
     {
-        $offset = $this->page > 1 ? $this->pageSize * ($this->page - 1) : 0;
-        $this->source->setLimit($this->pageSize);
+        $this->total = $this->source->getTotal();
+        $page = $this->getPage();
+        $pageSize = $this->getPageSize();
+        $offset = $page > 1 ? $pageSize * ($page - 1) : 0;
+        $this->source->setLimit($pageSize);
         $this->source->setOffset($offset);
         $this->data = $this->source->all();
-        $this->total = $this->source->getTotal();
         return $this->data;
     }
 
