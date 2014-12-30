@@ -129,7 +129,7 @@ abstract class BasePagination
             $this->pageSize = self::$defaultPageSize;
         }
 
-        if (ceil($this->getTotal() / $this->pageSize) < $this->getPage()) {
+        if (ceil($this->total / $this->pageSize) < $this->page) {
             header("Location: " . $this->getUrl(1));
         }
 
