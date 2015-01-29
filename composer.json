@@ -4,15 +4,15 @@
     "version": "0.1",
     "license": "MIT",
     "autoload": {
-        "psr-0": {
-            "": "src/"
+        "psr-4": {
+            "Mindy\\Pagination\\": "src/Mindy/Pagination"
         }
     },
     "require": {
         "php": ">=5.4",
-        "mindy/helper": "dev-master",
-        "mindy/exception": "dev-master",
-        "mindy/template": "dev-master"
+        "mindy/helper": "0.1",
+        "mindy/exception": "0.1",
+        "mindy/template": "0.1"
     },
     "require-dev": {
         "phpunit/phpunit": "3.7.32",
