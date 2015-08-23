@@ -3,15 +3,17 @@
 namespace Mindy\Pagination;
 
 use Mindy\Exception\Exception;
+use Mindy\Helper\Creator;
 use Mindy\Helper\Traits\Accessors;
 use Mindy\Helper\Traits\Configurator;
 use Mindy\Pagination\Interfaces\IPagination;
+use Serializable;
 
 /**
  * Class BasePagination
  * @package Mindy\Pagination
  */
-abstract class BasePagination
+abstract class BasePagination implements Serializable
 {
     use Accessors, Configurator;
 
@@ -46,15 +48,15 @@ abstract class BasePagination
     /**
      * @var int total records or elements in array
      */
-    protected $total;
+    public $total;
     /**
      * @var int autoincrement pagination classes on the page
      */
-    private static $id = 0;
+    private static $_id = 0;
     /**
      * @var int current pagination id
      */
-    private $_id;
+    public $id;
     /**
      * @var string Pager name
      */
@@ -62,7 +64,7 @@ abstract class BasePagination
     /**
      * @var bool is QuerySet?
      */
-    private $isQs = false;
+    public $isQs = false;
 
     public function __construct($source, array $config = [])
     {
@@ -73,9 +75,9 @@ abstract class BasePagination
 
     public function init()
     {
-        self::$id++;
+        self::$_id++;
 
-        $this->_id = self::$id;
+        $this->id = self::$_id;
         if (class_exists('\Mindy\Orm\QuerySet')) {
             $this->isQs = $this->source instanceof \Mindy\Orm\QuerySet;
         }
@@ -114,11 +116,7 @@ abstract class BasePagination
     {
         if (isset($_GET[$this->getPageSizeKey()])) {
             $pageSize = (int)$_GET[$this->getPageSizeKey()];
-            if ($pageSize) {
-                $this->pageSize = $pageSize;
-            } else {
-                $this->pageSize = self::$defaultPageSize;
-            }
+            $this->pageSize = $pageSize ? $pageSize : self::$defaultPageSize;
         } else if ($this->pageSize === null) {
             $this->pageSize = self::$defaultPageSize;
         }
@@ -279,7 +277,7 @@ abstract class BasePagination
                 $base = 'Pager';
             }
 
-            return $base . '_' . $this->_id;
+            return $base . '_' . $this->id;
         } else {
             return $this->_name;
         }
@@ -313,5 +311,17 @@ abstract class BasePagination
             }
         }
         return $pages;
+    }
+
+    public function serialize()
+    {
+        $props = Creator::getObjectVars($this);
+        return serialize($props);
+    }
+
+    public function unserialize($data)
+    {
+        $props = unserialize($data);
+        Creator::configure($this, $props);
     }
 }
