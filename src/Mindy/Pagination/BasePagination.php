@@ -24,7 +24,11 @@ abstract class BasePagination implements Serializable
     /**
      * @var string
      */
-    public $key;
+    public $pageKey;
+    /**
+     * @var string
+     */
+    public $pageSizeKey;
     /**
      * @var int
      */
@@ -90,7 +94,7 @@ abstract class BasePagination implements Serializable
             $uri['query'] = '';
         }
         parse_str($uri['query'], $params);
-        $params[$this->getName()] = $page;
+        $params[$this->getPageKey()] = $page;
         if ($endless) {
             $params['endless'] = $endless;
         }
@@ -133,7 +137,7 @@ abstract class BasePagination implements Serializable
      */
     public function getPageSizeKey()
     {
-        return $this->getName() . '_PageSize';
+        return empty($this->pageSizeKey) ? $this->getPageKey() . '_PageSize' : $this->pageSizeKey;
     }
 
     public function getTotal()
@@ -169,7 +173,7 @@ abstract class BasePagination implements Serializable
         $page = isset($_GET[$key]) ? (int)$_GET[$key] : 1;
         if ($page <= 0) {
             return $page = 1;
-        } elseif ($page > $this->getTotal()) {
+        } elseif ($page > $this->getPagesCount()) {
             return $page = $this->getPagesCount();
         } else {
             return $page;
@@ -179,7 +183,7 @@ abstract class BasePagination implements Serializable
     public function getPage()
     {
         if (!$this->page) {
-            $this->page = $this->fetchPage($this->getName());
+            $this->page = $this->fetchPage($this->getPageKey());
         }
         return $this->page;
     }
@@ -263,14 +267,14 @@ abstract class BasePagination implements Serializable
         return $this->data;
     }
 
-    public function setName($name)
+    public function setPageKey($key)
     {
-        $this->_name = $name;
+        $this->pageKey = $key;
     }
 
-    public function getName()
+    public function getPageKey()
     {
-        if ($this->_name === null) {
+        if ($this->pageKey === null) {
             if ($this->isQs) {
                 $base = $this->source->model->classNameShort();
             } else {
@@ -279,7 +283,7 @@ abstract class BasePagination implements Serializable
 
             return $base . '_' . $this->id;
         } else {
-            return $this->_name;
+            return $this->pageKey;
         }
     }
 

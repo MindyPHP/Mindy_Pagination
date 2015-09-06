@@ -22,9 +22,10 @@ class Pagination extends BasePagination
         return [
             'objects' => $this->data,
             'meta' => [
-                'pagesCount' => $this->getPagesCount(),
-                'page' => $this->page,
-                'pageSize' => $this->pageSize,
+                'total' => $this->getTotal(),
+                'pages_count' => $this->getPagesCount(),
+                'page' => $this->getPage(),
+                'page_size' => $this->getPageSize(),
             ]
         ];
     }
