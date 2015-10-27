@@ -180,10 +180,13 @@ abstract class BasePagination implements Serializable
     {
         if (class_exists('\Mindy\Http\Request')) {
             $page = (int)Mindy::app()->request->get->get($key, 1);
+            if (empty($page)) {
+                $page = 1;
+            }
         } else {
             if (isset($_GET[$key])) {
                 $page = (int)$_GET[$key];
-                if (!$page) {
+                if (empty($page)) {
                     $page = 1;
                 }
             } else {
@@ -194,7 +197,11 @@ abstract class BasePagination implements Serializable
         if ($page <= 0) {
             return $page = 1;
         } elseif ($page > $this->getPagesCount()) {
-            return $page = $this->getPagesCount();
+            $page = $this->getPagesCount();
+            if (empty($page)) {
+                $page = 1;
+            }
+            return $page;
         } else {
             return $page;
         }
