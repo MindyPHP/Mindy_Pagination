@@ -2,6 +2,7 @@
 
 namespace Mindy\Pagination;
 
+use Mindy\Base\Mindy;
 use Mindy\Exception\Exception;
 use Mindy\Helper\Creator;
 use Mindy\Helper\Traits\Accessors;
@@ -118,12 +119,19 @@ abstract class BasePagination implements Serializable
      */
     public function getPageSize()
     {
-        if (isset($_GET[$this->getPageSizeKey()])) {
-            $pageSize = (int)$_GET[$this->getPageSizeKey()];
-            $this->pageSize = $pageSize ? $pageSize : self::$defaultPageSize;
-        } else if ($this->pageSize === null) {
-            $this->pageSize = self::$defaultPageSize;
+        if (class_exists('\Mindy\Http\Request')) {
+            $pageSize = (int)Mindy::app()->request->get->get($this->getPageSizeKey(), self::$defaultPageSize);
+        } else {
+            if (isset($_GET[$this->getPageSizeKey()])) {
+                $pageSize = (int)$_GET[$this->getPageSizeKey()];
+                if (!$pageSize) {
+                    $pageSize = self::$defaultPageSize;
+                }
+            } else {
+                $pageSize = self::$defaultPageSize;
+            }
         }
+        $this->pageSize = $pageSize;
 
         if (ceil($this->total / $this->pageSize) < $this->page) {
             header("Location: " . $this->getUrl(1));
@@ -170,7 +178,19 @@ abstract class BasePagination implements Serializable
 
     protected function fetchPage($key = null)
     {
-        $page = isset($_GET[$key]) ? (int)$_GET[$key] : 1;
+        if (class_exists('\Mindy\Http\Request')) {
+            $page = (int)Mindy::app()->request->get->get($key, 1);
+        } else {
+            if (isset($_GET[$key])) {
+                $page = (int)$_GET[$key];
+                if (!$page) {
+                    $page = 1;
+                }
+            } else {
+                $page = 1;
+            }
+        }
+
         if ($page <= 0) {
             return $page = 1;
         } elseif ($page > $this->getPagesCount()) {
