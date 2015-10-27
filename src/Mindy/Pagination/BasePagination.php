@@ -197,11 +197,7 @@ abstract class BasePagination implements Serializable
         if ($page <= 0) {
             return $page = 1;
         } elseif ($page > $this->getPagesCount()) {
-            $page = $this->getPagesCount();
-            if (empty($page)) {
-                $page = 1;
-            }
-            return $page;
+            return $this->getPagesCount();
         } else {
             return $page;
         }
