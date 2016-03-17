@@ -1,34 +1,38 @@
 {
-    "name": "mindy/pagination",
-    "homepage": "https://github.com/studio107/Mindy_Pagination",
-    "version": "0.2",
-    "license": "MIT",
-    "autoload": {
-        "psr-4": {
-            "Mindy\\Pagination\\": "src/Mindy/Pagination"
-        }
-    },
-    "require": {
-        "php": ">=5.4",
-        "mindy/helper": "0.*",
-        "mindy/exception": "0.*",
-        "mindy/template": ">=1.0.3"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "3.7.32",
-        "phpunit/php-invoker": "1.1.3",
-        "phpunit/dbunit": "1.3.1",
-        "phpunit/phpunit-selenium": "1.3.3",
-        "phpunit/phpunit-story": "1.0.2",
-        "satooshi/php-coveralls": "dev-master"
-    },
-    "authors": [{
-        "name": "Maxim Falaleev",
-        "email": "max@studio107.ru",
-        "homepage": "http://studio107.ru",
-        "role": "Developer"
-    }],
-    "support": {
-        "issues": "https://github.com/studio107/Mindy_Pagination/issues?state=open"
+  "name": "mindy/pagination",
+  "homepage": "https://github.com/studio107/Mindy_Pagination",
+  "version": "1.0",
+  "license": "BSD",
+  "autoload": {
+    "psr-4": {
+      "Mindy\\Pagination\\": "src/Mindy/Pagination"
     }
+  },
+  "require": {
+    "php": ">=5.4",
+    "mindy/helper": "*",
+    "mindy/exception": "*",
+    "mindy/base": "*",
+    "mindy/utils": "*",
+    "mindy/template": "*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "3.7.32",
+    "phpunit/php-invoker": "1.1.3",
+    "phpunit/dbunit": "1.3.1",
+    "phpunit/phpunit-selenium": "1.3.3",
+    "phpunit/phpunit-story": "1.0.2",
+    "satooshi/php-coveralls": "dev-master"
+  },
+  "authors": [
+    {
+      "name": "Maxim Falaleev",
+      "email": "max@studio107.ru",
+      "homepage": "http://studio107.ru",
+      "role": "Developer"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/studio107/Mindy_Pagination/issues?state=open"
+  }
 }
