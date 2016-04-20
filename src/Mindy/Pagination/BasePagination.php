@@ -7,7 +7,10 @@ use Mindy\Exception\Exception;
 use Mindy\Helper\Creator;
 use Mindy\Helper\Traits\Accessors;
 use Mindy\Helper\Traits\Configurator;
+use Mindy\Orm\Manager;
+use Mindy\Orm\QuerySet;
 use Mindy\Pagination\Interfaces\IPagination;
+use Mindy\Query\Query;
 use Serializable;
 
 /**
@@ -120,7 +123,7 @@ abstract class BasePagination implements Serializable
     public function getPageSize()
     {
         if (class_exists('\Mindy\Http\Request')) {
-            $pageSize = (int)Mindy::app()->request->get->get($this->getPageSizeKey(), self::$defaultPageSize);
+            $pageSize = (int)Mindy::app()->request->get->get($this->getPageSizeKey(), $this->pageSize ? $this->pageSize : self::$defaultPageSize);
         } else {
             if (isset($_GET[$this->getPageSizeKey()])) {
                 $pageSize = (int)$_GET[$this->getPageSizeKey()];
@@ -225,12 +228,12 @@ abstract class BasePagination implements Serializable
     {
         if (is_array($this->source)) {
             return $this->applyLimitArray();
-        } else if ($this->source instanceof \Mindy\Orm\Manager) {
+        } else if ($this->source instanceof Manager) {
             $this->source = $this->source->getQuerySet();
             return $this->applyLimitQuerySet();
-        } else if ($this->source instanceof \Mindy\Orm\QuerySet) {
+        } else if ($this->source instanceof QuerySet) {
             return $this->applyLimitQuerySet();
-        } else if ($this->source instanceof \Mindy\Query\Query) {
+        } else if ($this->source instanceof Query) {
             return $this->applyLimitQuery();
         } else if ($this->source instanceof IPagination) {
             return $this->applyLimitByInterface();
