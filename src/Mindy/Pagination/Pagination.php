@@ -2,7 +2,7 @@
 
 namespace Mindy\Pagination;
 
-use Mindy\Utils\RenderTrait;
+use Mindy\Helper\Traits\RenderTrait;
 
 /**
  * Class Pagination
