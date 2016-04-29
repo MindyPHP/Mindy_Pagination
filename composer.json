@@ -13,7 +13,6 @@
     "mindy/helper": "*",
     "mindy/exception": "*",
     "mindy/base": "*",
-    "mindy/utils": "*",
     "mindy/template": "*"
   },
   "require-dev": {
