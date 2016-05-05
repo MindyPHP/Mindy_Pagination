@@ -1,7 +1,6 @@
 {
   "name": "mindy/pagination",
   "homepage": "https://github.com/studio107/Mindy_Pagination",
-  "version": "1.0",
   "license": "BSD",
   "autoload": {
     "psr-4": {
@@ -9,11 +8,6 @@
     }
   },
   "require": {
-    "php": ">=5.4",
-    "mindy/helper": "*",
-    "mindy/exception": "*",
-    "mindy/base": "*",
-    "mindy/template": "*"
   },
   "require-dev": {
     "phpunit/phpunit": "3.7.32",
