@@ -38,10 +38,6 @@ abstract class BasePagination implements Serializable
      */
     public $pageSize;
     /**
-     * @var array
-     */
-    public $pageSizes = [10, 20, 50, 100];
-    /**
      * @var array|IPagination|\Mindy\Orm\QuerySet|\Mindy\Orm\Manager|\Mindy\Query\Query
      */
     public $source = [];
@@ -353,5 +349,15 @@ abstract class BasePagination implements Serializable
     {
         $props = unserialize($data);
         Creator::configure($this, $props);
+    }
+
+    public function getPageSizes()
+    {
+        $pageSize = $this->getPageSize();
+        $sizes = [];
+        foreach (range(1, 5) as $factor) {
+            $sizes[] = $pageSize * $factor;
+        }
+        return $sizes;
     }
 }
