@@ -20,11 +20,6 @@ use Serializable;
 abstract class BasePagination implements Serializable
 {
     use Accessors, Configurator;
-
-    /**
-     * @var int
-     */
-    public static $defaultPageSize = 10;
     /**
      * @var string
      */
@@ -33,10 +28,6 @@ abstract class BasePagination implements Serializable
      * @var string
      */
     public $pageSizeKey;
-    /**
-     * @var int
-     */
-    public $pageSize;
     /**
      * @var array|IPagination|\Mindy\Orm\QuerySet|\Mindy\Orm\Manager|\Mindy\Query\Query
      */
@@ -54,21 +45,21 @@ abstract class BasePagination implements Serializable
      */
     public $total;
     /**
-     * @var int autoincrement pagination classes on the page
-     */
-    private static $_id = 0;
-    /**
      * @var int current pagination id
      */
     public $id;
     /**
-     * @var string Pager name
-     */
-    private $_name;
-    /**
      * @var bool is QuerySet?
      */
     public $isQs = false;
+    /**
+     * @var int autoincrement pagination classes on the page
+     */
+    private static $_id = 0;
+    /**
+     * @var int
+     */
+    private $_pageSize = 10;
 
     public function __construct($source, array $config = [])
     {
@@ -85,6 +76,14 @@ abstract class BasePagination implements Serializable
         if (class_exists('\Mindy\Orm\QuerySet')) {
             $this->isQs = $this->source instanceof \Mindy\Orm\QuerySet;
         }
+    }
+
+    /**
+     * @param $value
+     */
+    public function setPageSize($value)
+    {
+        $this->_pageSize = $value;
     }
 
     public function getUrl($page, $endless = false)
@@ -112,31 +111,29 @@ abstract class BasePagination implements Serializable
         return $uri['path'] . "?" . http_build_query($params);
     }
 
+    public function fetchPageSize($callback = true)
+    {
+        if (isset($_GET[$this->getPageSizeKey()])) {
+            $pageSize = (int)$_GET[$this->getPageSizeKey()];
+        } else {
+            $pageSize = $this->getPageSize();
+        }
+
+        if (ceil($this->total / $pageSize) < $this->page && $callback) {
+            header("Location: " . $this->getUrl(1));
+            exit();
+        }
+
+        return $pageSize;
+    }
+
     /**
      * Return PageSize
      * @return int
      */
     public function getPageSize()
     {
-        if (class_exists('\Mindy\Http\Request')) {
-            $pageSize = (int)Mindy::app()->request->get->get($this->getPageSizeKey(), $this->pageSize ? $this->pageSize : self::$defaultPageSize);
-        } else {
-            if (isset($_GET[$this->getPageSizeKey()])) {
-                $pageSize = (int)$_GET[$this->getPageSizeKey()];
-                if (!$pageSize) {
-                    $pageSize = self::$defaultPageSize;
-                }
-            } else {
-                $pageSize = self::$defaultPageSize;
-            }
-        }
-        $this->pageSize = $pageSize;
-
-        if (ceil($this->total / $this->pageSize) < $this->page) {
-            header("Location: " . $this->getUrl(1));
-        }
-
-        return $this->pageSize;
+        return $this->_pageSize;
     }
 
     /**
@@ -157,7 +154,7 @@ abstract class BasePagination implements Serializable
      */
     public function getPagesCount()
     {
-        return ceil($this->getTotal() / $this->getPageSize());
+        return ceil($this->getTotal() / $this->fetchPageSize());
     }
 
     public function hasNextPage()
@@ -245,7 +242,7 @@ abstract class BasePagination implements Serializable
     {
         $this->total = count($this->source);
         $page = $this->getPage();
-        $pageSize = $this->getPageSize();
+        $pageSize = $this->fetchPageSize();
         $this->data = array_slice($this->source, $pageSize * ($page <= 1 ? 0 : $page - 1), $pageSize);
         return $this->data;
     }
@@ -257,7 +254,7 @@ abstract class BasePagination implements Serializable
     {
         $this->total = $this->source->count();
         $page = $this->getPage();
-        $pageSize = $this->getPageSize();
+        $pageSize = $this->fetchPageSize();
         $offset = $page > 1 ? $pageSize * ($page - 1) : 0;
         $this->data = $this->source->limit($pageSize)->offset($offset)->all();
         return $this->data;
@@ -270,7 +267,7 @@ abstract class BasePagination implements Serializable
     {
         $source = clone $this->source;
         $this->total = $source->count();
-        $this->data = $this->source->paginate($this->getPage(), $this->getPageSize())->all();
+        $this->data = $this->source->paginate($this->getPage(), $this->fetchPageSize())->all();
         return $this->data;
     }
 
@@ -281,7 +278,7 @@ abstract class BasePagination implements Serializable
     {
         $this->total = $this->source->getTotal();
         $page = $this->getPage();
-        $pageSize = $this->getPageSize();
+        $pageSize = $this->fetchPageSize();
         $offset = $page > 1 ? $pageSize * ($page - 1) : 0;
         $this->source->setLimit($pageSize);
         $this->source->setOffset($offset);
