@@ -1,21 +1,16 @@
 {
   "name": "mindy/pagination",
   "homepage": "https://github.com/studio107/Mindy_Pagination",
-  "license": "BSD",
+  "license": "MIT",
   "autoload": {
     "psr-4": {
-      "Mindy\\Pagination\\": "src/Mindy/Pagination"
+      "Mindy\\Pagination\\": "src/"
     }
   },
   "require": {
+    "mindy/helper": "^3.0"
   },
   "require-dev": {
-    "phpunit/phpunit": "3.7.32",
-    "phpunit/php-invoker": "1.1.3",
-    "phpunit/dbunit": "1.3.1",
-    "phpunit/phpunit-selenium": "1.3.3",
-    "phpunit/phpunit-story": "1.0.2",
-    "satooshi/php-coveralls": "dev-master"
   },
   "authors": [
     {
