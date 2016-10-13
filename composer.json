@@ -8,9 +8,7 @@
     }
   },
   "require": {
-    "mindy/helper": "^3.0"
-  },
-  "require-dev": {
+    "mindy/helper": "^4.0"
   },
   "authors": [
     {

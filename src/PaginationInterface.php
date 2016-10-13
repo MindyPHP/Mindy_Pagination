@@ -1,12 +1,12 @@
 <?php
 
-namespace Mindy\Pagination\Interfaces;
+namespace Mindy\Pagination;
 
 /**
  * Interface IPagination
  * @package Mindy\Pagination
  */
-interface IPagination
+interface PaginationInterface
 {
     /**
      * @param $limit int

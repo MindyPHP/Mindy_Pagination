@@ -1,7 +1,8 @@
 <?php
 
+namespace Mindy\Pagination\Tests;
+
 use Mindy\Pagination\Pagination;
-use Mindy\Query\Query;
 
 /**
  * All rights reserved.
@@ -13,7 +14,7 @@ use Mindy\Query\Query;
  * @site http://studio107.ru
  * @date 17/04/14.04.2014 16:45
  */
-class PaginationTest extends TestCase
+class PaginationTest extends \PHPUnit_Framework_TestCase
 {
     public function provider()
     {
@@ -65,27 +66,5 @@ class PaginationTest extends TestCase
                 'total' => 10
             ]
         ], $pager->toJson());
-    }
-
-    public function testPaginateQuery()
-    {
-        $connection = new \Mindy\Query\Connection([
-            'dsn' => 'sqlite::memory:'
-        ]);
-        $cmd = $connection->createCommand();
-        $cmd->createTable('test', ['id' => 'auto'])->execute();
-        $cmd->insert('test', ['id' => 1])->execute();
-        $cmd->insert('test', ['id' => 2])->execute();
-        $cmd->insert('test', ['id' => 3])->execute();
-        $cmd->insert('test', ['id' => 4])->execute();
-
-        $query = new Query();
-        $query->db = $connection;
-
-        $query->select(['id'])->from('test');
-        $pager = new Pagination($query, [
-            'pageSize' => 1
-        ]);
-        $this->assertEquals([['id' => 1]], $pager->paginate());
     }
 }

@@ -2,21 +2,12 @@
 
 namespace Mindy\Pagination;
 
-use Mindy\Exception\Exception;
-use Mindy\Creator\Creator;
-use Mindy\Helper\Traits\Accessors;
-use Mindy\Helper\Traits\Configurator;
-use Mindy\Pagination\Interfaces\IPagination;
-use Serializable;
-
 /**
  * Class BasePagination
  * @package Mindy\Pagination
  */
-abstract class BasePagination implements Serializable
+abstract class BasePagination
 {
-    use Accessors, Configurator;
-
     /**
      * @var string
      */
@@ -26,7 +17,7 @@ abstract class BasePagination implements Serializable
      */
     public $pageSizeKey;
     /**
-     * @var array|IPagination|\Mindy\Orm\QuerySet|\Mindy\Orm\Manager
+     * @var array|PaginationInterface|\Mindy\Orm\QuerySet|\Mindy\Orm\Manager
      */
     public $source = [];
     /**
@@ -214,7 +205,7 @@ abstract class BasePagination implements Serializable
 
             if ($this->source instanceof \Mindy\Orm\QuerySet) {
                 return $this->applyLimitQuerySet();
-            } else if ($this->source instanceof IPagination) {
+            } else if ($this->source instanceof PaginationInterface) {
                 return $this->applyLimitByInterface();
             } else {
                 throw new Exception("Unknown source");
@@ -308,18 +299,6 @@ abstract class BasePagination implements Serializable
             }
         }
         return $pages;
-    }
-
-    public function serialize()
-    {
-        $props = Creator::getObjectVars($this);
-        return serialize($props);
-    }
-
-    public function unserialize($data)
-    {
-        $props = unserialize($data);
-        Creator::configure($this, $props);
     }
 
     public function getPageSizes()

@@ -2,7 +2,7 @@
 
 namespace Mindy\Pagination;
 
-use Mindy\Helper\Traits\RenderTrait;
+use Mindy\app;
 
 /**
  * Class Pagination
@@ -10,8 +10,6 @@ use Mindy\Helper\Traits\RenderTrait;
  */
 class Pagination extends BasePagination
 {
-    use RenderTrait;
-
     public function __toString()
     {
         return (string)$this->render();
@@ -32,6 +30,6 @@ class Pagination extends BasePagination
 
     public function render($view = "core/pager/pager.html")
     {
-        return $this->renderTemplate($view, ['this' => $this]);
+        return app()->template->render($view, ['this' => $this]);
     }
 }
