@@ -2,7 +2,7 @@
 
 namespace Mindy\Pagination;
 
-use Mindy\app;
+use function Mindy\app;
 
 /**
  * Class Pagination

@@ -1,6 +1,7 @@
 <?php
 
 namespace Mindy\Pagination;
+use Exception;
 
 /**
  * Class BasePagination
@@ -54,6 +55,15 @@ abstract class BasePagination
         $this->source = $source;
         $this->configure($config);
         $this->init();
+    }
+
+    protected function configure(array $config)
+    {
+        foreach ($config as $key => $value) {
+            if (property_exists($this, $key)) {
+                $this->{$key} = $value;
+            }
+        }
     }
 
     public function init()
@@ -191,7 +201,7 @@ abstract class BasePagination
 
     /**
      * Apply limits to source
-     * @throws \Mindy\Exception\Exception
+     * @throws \Exception
      * @return $this
      */
     public function paginate()
