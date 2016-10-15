@@ -270,7 +270,7 @@ abstract class BasePagination
     {
         if ($this->pageKey === null) {
             if ($this->isQs) {
-                $base = $this->source->model->classNameShort();
+                $base = $this->source->getModel()->classNameShort();
             } else {
                 $base = 'Pager';
             }
